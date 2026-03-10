@@ -20,7 +20,7 @@ function getLeftBowerSuit(trumpSuit) {
     return pairs[trumpSuit]
 }
 
-// ---- SHUFFLE ----
+// ---- SHUFFLE ----  (test)
 function shuffleDeck(deck) {
     for (let i = 0; i < 24; i++) {
         let posA = Math.floor(Math.random() * 24)
