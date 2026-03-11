@@ -156,3 +156,57 @@ body {
     width: 100%;
     max-width: 400px;
 }
+
+/* Scoreboard */
+.scoreboard {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background-color: rgba(0,0,0,0.4);
+    padding: 8px 20px;
+    border-radius: 10px;
+    border: 2px solid #b8860b;
+    color: #f5f0e8;
+}
+
+.score-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.score-label {
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+.score-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: #b8860b;
+}
+
+.score-divider {
+    font-size: 24px;
+    color: #f5f0e8;
+    opacity: 0.5;
+}
+
+/* Trump indicator */
+.table-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.trump-indicator {
+    color: #f5f0e8;
+    font-size: 14px;
+    background-color: rgba(0,0,0,0.3);
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid #b8860b;
+    min-height: 24px;
+}

@@ -53,3 +53,33 @@ function showMessage(message) {
     const container = document.getElementById("game-message")
     container.innerHTML = message
 }
+
+function makeHandClickable(action) {
+    const cards = document.querySelectorAll("#hand-player .card")
+    cards.forEach((card, index) => {
+        card.onclick = () => window[action](index)
+    })
+}
+
+function makeHandUnclickable() {
+    const cards = document.querySelectorAll("#hand-player .card")
+    cards.forEach(card => {
+        card.onclick = null
+    })
+}
+
+function displayScore() {
+    document.getElementById("score-team1").innerHTML = scoreTeam1
+    document.getElementById("score-team2").innerHTML = scoreTeam2
+}
+
+function displayTrump() {
+    const suitSymbols = {
+        "Hearts":   "♥ Hearts",
+        "Diamonds": "♦ Diamonds",
+        "Spades":   "♠ Spades",
+        "Clubs":    "♣ Clubs"
+    }
+    const container = document.getElementById("trump-indicator")
+    container.innerHTML = `Trump: ${suitSymbols[trumpSuit]}`
+}

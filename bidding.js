@@ -92,6 +92,20 @@ function setTrump(suit, playerIndex) {
     const player = players[playerIndex]
     showMessage(`${player.name} set trump to ${suit}! 🎉`)
     hideButtons()
+
+    // Set offence and display info
+    setOffence(playerIndex)
+    displayTrump()
+    displayScore()
+
+    // Check if partner forced a go alone
+    if (playerIndex === 2 && biddingRound === 1) {
+        goingAlone = true
+        showMessage(`Partner ordered you up and must go alone!`)
+    }
+
+    // Kick off setup phase
+    setTimeout(() => startSetup(playerIndex), 1500)
 }
 
 // Human clicks Order Up
