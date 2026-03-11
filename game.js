@@ -2,6 +2,7 @@
 const ranks = ["9", "10", "J", "Q", "K", "A"]
 const suits = ["Hearts", "Clubs", "Spades", "Diamonds"]
 let trumpsuit = null
+let leftBowerSuit = null // Store left bower suit globally
 
 const deck = []
 for (let suit of suits) {
@@ -59,24 +60,8 @@ function dealCards(deck, players) {
     return topCard
 }
 
-// ---- START THE GAME ----
-shuffleDeck(deck)
-const topCard = dealCards(deck, players)
-
-console.log("Top card:", topCard)
-console.log("Your hand:", players[0].hand)
-
 function getCardPower(card, trumpSuit, leadSuit) {
-    
-    // First figure out the left bower suit
-    // (same color as trump, different suit)
-    const leftBowerSuit = {
-        "Hearts": "Diamonds",
-        "Diamonds": "Hearts",
-        "Spades": "Clubs",
-        "Clubs": "Spades"
-    }[trumpSuit]
-
+    // Use global leftBowerSuit variable
     // Check if card is Right Bower
     if (card.rank === "J" && card.suit === trumpSuit) {
         return 14
@@ -103,15 +88,8 @@ function getCardPower(card, trumpSuit, leadSuit) {
     return 0
 }
 
-function hasLeadSuit(hand, leadSuit, trumpSuit) {
-
-    const leftBowerSuit = {
-        "Hearts": "Diamonds",
-        "Diamonds": "Hearts",
-        "Spades": "Clubs",
-        "Clubs": "Spades"
-    }[trumpSuit]
-
+function hasLeadSuit(hand, leadSuit) {
+    // Use global leftBowerSuit variable
     for (let card of hand) {
         // Left bower doesn't count as its original suit!
         if (card.rank === "J" && card.suit === leftBowerSuit) {
@@ -125,3 +103,54 @@ function hasLeadSuit(hand, leadSuit, trumpSuit) {
     // No lead suit cards found
     return false
 }
+
+function createCardHTML(card) {
+    // Match suit to symbol and color
+    const suitSymbols = {
+        "Hearts":   { symbol: "♥", color: "red" },
+        "Diamonds": { symbol: "♦", color: "red" },
+        "Spades":   { symbol: "♠", color: "black" },
+        "Clubs":    { symbol: "♣", color: "black" }
+    }
+
+    const suit = suitSymbols[card.suit]
+
+    // Build the card HTML
+    return `
+        <div class="card ${suit.color}">
+            <div>${card.rank}</div>
+            <div>${suit.symbol}</div>
+        </div>
+    `
+}
+
+function displayHand(cards, elementId, faceDown = false) {
+    const container = document.getElementById(elementId)
+    container.innerHTML = ""
+
+    for (let card of cards) {
+        if (faceDown) {
+            // Show card back for opponents
+            container.innerHTML += `<div class="card-back"></div>`
+        } else {
+            // Show actual card for player
+            container.innerHTML += createCardHTML(card)
+        }
+    }
+}
+
+function displayFaceUpCard(card) {
+    const container = document.getElementById("face-up-card")
+    container.innerHTML = createCardHTML(card)
+}
+
+// ---- START THE GAME ----
+shuffleDeck(deck)
+const topCard = dealCards(deck, players)
+
+// Display everything on screen
+displayHand(players[0].hand, "hand-player")
+displayHand(players[1].hand, "hand-opponent1", true)
+displayHand(players[2].hand, "hand-partner", true)
+displayHand(players[3].hand, "hand-opponent2", true)
+displayFaceUpCard(topCard)

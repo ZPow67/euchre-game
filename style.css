@@ -1,0 +1,145 @@
+/* Import old-timey font */
+* {
+    font-family: 'Playfair Display', serif;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #1a472a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Main game container */
+.game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    max-width: 600px;
+    padding: 10px;
+}
+
+/* The felt table */
+.table {
+    background-color: #2d6a4f;
+    border: 6px solid #b8860b;
+    border-radius: 20px;
+    width: 200px;
+    height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+
+/* Middle row layout */
+.middle-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    justify-content: center;
+}
+
+/* Opponent areas */
+.opponent-top, .opponent-side {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    color: #f5f0e8;
+    font-size: 14px;
+}
+
+/* Card rows */
+.card-row {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* Individual cards */
+.card {
+    width: 45px;
+    height: 65px;
+    background-color: white;
+    border: 2px solid #333;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 3px;
+    font-size: 12px;
+    font-weight: bold;
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    cursor: pointer;
+}
+
+/* Card back (opponents) */
+.card-back {
+    width: 45px;
+    height: 65px;
+    background: repeating-linear-gradient(
+        45deg,
+        #0a3d91,
+        #0a3d91 5px,
+        #1a5db5 5px,
+        #1a5db5 10px
+    );
+    border: 2px solid #333;
+    border-radius: 6px;
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+/* Red suits */
+.red { color: #cc0000; }
+
+/* Black suits */
+.black { color: #111111; }
+
+/* Your hand */
+.your-hand {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+}
+
+/* Face up card area */
+.face-up-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    color: #f5f0e8;
+    font-size: 12px;
+}
+
+/* Action buttons */
+.buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.buttons button {
+    background-color: #b8860b;
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-family: 'Playfair Display', serif;
+    cursor: pointer;
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.buttons button:hover {
+    background-color: #d4a017;
+}

@@ -4,9 +4,57 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Euchre</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h1>Euchre</h1>
-<script src="game.js"></script>
+
+    <div class="game-container">
+
+        <!-- Partner at the top -->
+        <div class="opponent-top">
+            <p>Partner</p>
+            <div class="card-row" id="hand-partner"></div>
+        </div>
+
+        <!-- Middle row -->
+        <div class="middle-row">
+
+            <!-- Left opponent -->
+            <div class="opponent-side">
+                <p>Opponent 1</p>
+                <div class="card-row" id="hand-opponent1"></div>
+            </div>
+
+            <!-- The table -->
+            <div class="table">
+                <div class="face-up-area">
+                    <p>Face Up Card</p>
+                    <div id="face-up-card"></div>
+                </div>
+            </div>
+
+            <!-- Right opponent -->
+            <div class="opponent-side">
+                <p>Opponent 2</p>
+                <div class="card-row" id="hand-opponent2"></div>
+            </div>
+
+        </div>
+
+        <!-- Your hand at the bottom -->
+        <div class="your-hand">
+            <div class="card-row" id="hand-player"></div>
+        </div>
+
+        <!-- Action buttons -->
+        <div class="buttons" id="action-buttons">
+            <button onclick="orderUp()">Order Up</button>
+            <button onclick="pass()">Pass</button>
+        </div>
+
+    </div>
+
+    <script src="game.js"></script>
 </body>
 </html>
