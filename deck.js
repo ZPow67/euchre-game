@@ -37,3 +37,13 @@ function dealCards(deck, players) {
     let topCard = deck.pop();
     return topCard;
 }
+
+function getLeftBowerSuit(trumpSuit) {
+    const pairs = {
+        "Hearts":   "Diamonds",
+        "Diamonds": "Hearts",
+        "Spades":   "Clubs",
+        "Clubs":    "Spades"
+    }
+    return pairs[trumpSuit]
+}

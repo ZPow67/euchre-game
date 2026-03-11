@@ -50,6 +50,6 @@ function hideButtons() {
 }
 
 function showMessage(message) {
-    const container = document.getElementById("action-buttons")
-    container.innerHTML = `<p class="message">${message}</p>`
+    const container = document.getElementById("game-message")
+    container.innerHTML = message
 }

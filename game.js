@@ -33,7 +33,7 @@ function startGame() {
     // Start bidding
     currentPlayerIndex = 1
     biddingRound = 1
-    //runBidding() <- Will be made later, for now we just want to see the cards on the screen
+    runBidding()
 }
 
 startGame()
