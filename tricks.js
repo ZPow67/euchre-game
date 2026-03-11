@@ -57,6 +57,10 @@ function playCard(index) {
 }
 
 function processPlayedCard(playerIndex, card) {
+
+    console.log("currentTrick.length:", currentTrick.length)
+    console.log("card being played:", card)
+
     // Safety check!
     if (!card) {
         console.log("Null card for player:", playerIndex)
@@ -77,8 +81,10 @@ function processPlayedCard(playerIndex, card) {
         } else {
             leadSuit = card.suit
         }
+        updateDebug()  // ADD THIS
+        console.log("leadSuit set to:", leadSuit)
     }
-    
+
 
     // Remove card from hand
     player.hand.splice(handIndex, 1)
@@ -127,6 +133,7 @@ function evaluateTrick() {
     showMessage(`${winner.name} wins the trick! 🎉`)
     animateTrickWinner(winnerIndex)
     tricksPlayed++
+    updateDebug()
 
     if (tricksPlayed === 5) {
         setTimeout(() => calculatePoints(), 2000)

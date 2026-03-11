@@ -14,21 +14,27 @@ function runBidding() {
             showMessage("Your turn! Order up or pass?")
             showButtons([
                 { label: "Order Up", action: "orderUp()" },
-                { label: "Pass",     action: "passBid()" }
+                { label: "Pass", action: "passBid()" }
             ])
         } else {
             showMessage("Your turn! Name a trump suit or pass?")
-            showButtons([
-                { label: "Hearts",   action: "nameTrumpSuit('Hearts')"   },
-                { label: "Diamonds", action: "nameTrumpSuit('Diamonds')" },
-                { label: "Spades",   action: "nameTrumpSuit('Spades')"   },
-                { label: "Clubs",    action: "nameTrumpSuit('Clubs')"    },
-                { label: "Pass",     action: "passBid()"                 }
-            ])
-        }
-        return
-    }
 
+            // Can't name the turned down suit!
+            const allSuits = ["Hearts", "Diamonds", "Spades", "Clubs"]
+            const availableSuits = allSuits.filter(suit => suit !== topCard.suit)
+
+            const buttons = availableSuits.map(suit => ({
+                label: suit,
+                action: `nameTrumpSuit('${suit}')`
+            }))
+
+            // Add pass button
+            buttons.push({ label: "Pass", action: "passBid()" })
+
+            showButtons(buttons)
+        }
+    }
+    
     showMessage(`${player.name} is thinking...`)
     setTimeout(() => {
         if (biddingRound === 1) {
@@ -68,10 +74,10 @@ function nextBidder() {
         showMessage("You're hung! You must name a suit!")
         setTimeout(() => {
             showButtons([
-                { label: "Hearts",   action: "nameTrumpSuit('Hearts')"   },
+                { label: "Hearts", action: "nameTrumpSuit('Hearts')" },
                 { label: "Diamonds", action: "nameTrumpSuit('Diamonds')" },
-                { label: "Spades",   action: "nameTrumpSuit('Spades')"   },
-                { label: "Clubs",    action: "nameTrumpSuit('Clubs')"    }
+                { label: "Spades", action: "nameTrumpSuit('Spades')" },
+                { label: "Clubs", action: "nameTrumpSuit('Clubs')" }
             ])
         }, 1500)
         return
@@ -88,9 +94,12 @@ function setTrump(suit, playerIndex) {
     setOffence(playerIndex)
     displayTrump()
     displayScore()
+    updateDebug()
 
-    if (playerIndex === 2 && biddingRound === 1) {
+    // Forced alone — only when Partner orders up the human dealer
+    if (playerIndex === 2 && biddingRound === 1 && dealerIndex === 0) {
         players[2].isGoingAlone = true
+        showMessage("Partner ordered you up - they must go alone!")
     }
 
     setTimeout(() => startSetup(playerIndex), 1500)

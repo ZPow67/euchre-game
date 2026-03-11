@@ -141,3 +141,15 @@ function invalidCardFeedback(index) {
         setTimeout(() => card.classList.remove("invalid-card"), 400)
     }
 }
+
+function updateDebug() {
+    document.getElementById("debug-trump").innerHTML = trumpSuit || "-"
+    document.getElementById("debug-lead").innerHTML = leadSuit || "-"
+    document.getElementById("debug-bidround").innerHTML = biddingRound || "-"
+    document.getElementById("debug-player").innerHTML = players[currentPlayerIndex]?.name || "-"
+    document.getElementById("debug-dealer").innerHTML = players[dealerIndex]?.name || "-"
+    document.getElementById("debug-tricks").innerHTML = tricksPlayed || "0"
+    document.getElementById("debug-t1tricks").innerHTML = tricksTeam1 || "0"
+    document.getElementById("debug-t2tricks").innerHTML = tricksTeam2 || "0"
+    document.getElementById("debug-offence").innerHTML = team1IsOffence ? "Team 1" : "Team 2"
+}

@@ -25,7 +25,9 @@ function aiDecideRound2(player, topCardSuit) {
     let bestSuit = null
     let bestCount = 0
     for (let suit in suitCounts) {
-        if (suit !== topCardSuit && suitCounts[suit] > bestCount) {
+        // Can't name the turned down suit!
+        if (suit === topCardSuit) continue
+        if (suitCounts[suit] > bestCount) {
             bestCount = suitCounts[suit]
             bestSuit = suit
         }
@@ -193,21 +195,36 @@ function aiPlayCard(player) {
     const hand = player.hand
     const position = currentTrick.length
     const onOffence = (player.team === 1 && team1IsOffence) ||
-                      (player.team === 2 && team2IsOffence)
+        (player.team === 2 && team2IsOffence)
+
+    console.log("=== AI PLAYING ===")
+    console.log("Player:", player.name)
+    console.log("Hand:", hand.map(c => c.rank + " of " + c.suit))
+    console.log("Lead suit:", leadSuit)
+    console.log("Trump suit:", trumpSuit)
+    console.log("Position:", position)
+    console.log("Has lead suit:", leadSuit ? hasLeadSuit(hand, leadSuit, trumpSuit) : "no lead yet")
 
     // Must follow suit check
     if (leadSuit && hasLeadSuit(hand, leadSuit, trumpSuit)) {
+        const leftBowerSuit = getLeftBowerSuit(trumpSuit)
         const validCards = hand.filter(card => {
-            const power = getCardPower(card, trumpSuit, leadSuit)
-            return power >= 2 && power <= 7
+            if (card.rank === "J" && card.suit === leftBowerSuit) return false
+            return card.suit === leadSuit
         })
+
+        console.log("Valid cards to follow suit:", validCards.map(c => c.rank + " of " + c.suit))
+        console.log("Valid cards length:", validCards.length)
+
         if (validCards.length > 0) {
             if (isTeammateWinning(currentPlayerIndex)) {
                 return validCards.reduce((a, b) =>
-                    getCardPower(a, trumpSuit, leadSuit) < getCardPower(b, trumpSuit, leadSuit) ? a : b)
+                    getCardPower(a, trumpSuit, leadSuit) <
+                        getCardPower(b, trumpSuit, leadSuit) ? a : b)
             } else {
                 return validCards.reduce((a, b) =>
-                    getCardPower(a, trumpSuit, leadSuit) > getCardPower(b, trumpSuit, leadSuit) ? a : b)
+                    getCardPower(a, trumpSuit, leadSuit) >
+                        getCardPower(b, trumpSuit, leadSuit) ? a : b)
             }
         }
     }

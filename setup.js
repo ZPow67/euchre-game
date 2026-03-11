@@ -40,7 +40,11 @@ function startSetup(playerIndex) {
 
 function discardCard(index) {
     makeHandUnclickable()
-    players[0].hand[index] = topCard
+
+    // Just remove the card at this index
+    // topCard is already in hand from startSetup!
+    players[0].hand.splice(index, 1)
+
     sortHand(players[0].hand, trumpSuit)
     displayHand(players[0].hand, "hand-player")
     showMessage(`Card discarded! ${trumpSuit} is trump! Let's play!`)
