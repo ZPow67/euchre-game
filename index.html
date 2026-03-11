@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
 </head>
+
 <body>
 
     <div class="game-container">
@@ -23,7 +25,7 @@
                 <span class="score-value" id="score-team2">0</span>
             </div>
         </div>
-        
+
         <!-- Partner at the top -->
         <div class="opponent-top">
             <p>Partner</p>
@@ -43,9 +45,22 @@
             <div class="table">
                 <div class="table-info">
                     <div id="trump-indicator" class="trump-indicator"></div>
-                    <div class="face-up-area">
-                        <p>Face Up</p>
-                        <div id="face-up-card"></div>
+                </div>
+
+                <!-- Cards played on table -->
+                <div class="played-cards">
+                    <div class="played-top">
+                        <div id="played-partner" class="played-card-slot"></div>
+                    </div>
+                    <div class="played-middle">
+                        <div id="played-opponent1" class="played-card-slot"></div>
+                        <div class="table-center">
+                            <div id="face-up-card"></div>
+                        </div>
+                        <div id="played-opponent2" class="played-card-slot"></div>
+                    </div>
+                    <div class="played-bottom">
+                        <div id="played-player" class="played-card-slot"></div>
                     </div>
                 </div>
             </div>
@@ -68,18 +83,18 @@
 
         <!-- Action buttons -->
         <div class="buttons" id="action-buttons"></div>
-    
-        </div>
 
     </div>
+
     <script src="deck.js"></script>
     <script src="players.js"></script>
     <script src="display.js"></script>
-    <script src="ai.js"></script>
-    <script src="bidding.js"></script>
-    <script src="setup.js"></script>
-    <script src="tricks.js"></script>
     <script src="scoring.js"></script>
+    <script src="ai.js"></script>
+    <script src="tricks.js"></script>
+    <script src="setup.js"></script>
+    <script src="bidding.js"></script>
     <script src="game.js"></script>
 </body>
+
 </html>

@@ -210,3 +210,65 @@ body {
     border: 1px solid #b8860b;
     min-height: 24px;
 }
+
+.sitting-out {
+    color: #f5f0e8;
+    opacity: 0.5;
+    font-size: 14px;
+    font-style: italic;
+}
+
+/* Played cards on table */
+.played-cards {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    width: 100%;
+}
+
+.played-top, .played-bottom {
+    display: flex;
+    justify-content: center;
+}
+
+.played-middle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 4px;
+}
+
+.table-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.played-card-slot {
+    width: 45px;
+    height: 65px;
+    border-radius: 6px;
+    border: 1px dashed rgba(255,255,255,0.2);
+}
+
+/* Invalid card animation */
+@keyframes shake {
+    0%   { transform: translateX(0); }
+    20%  { transform: translateX(-5px); }
+    40%  { transform: translateX(5px); }
+    60%  { transform: translateX(-5px); }
+    80%  { transform: translateX(5px); }
+    100% { transform: translateX(0); }
+}
+
+@keyframes redflash {
+    0%   { background-color: white; }
+    50%  { background-color: #ff4444; }
+    100% { background-color: white; }
+}
+
+.invalid-card {
+    animation: shake 0.4s ease, redflash 0.4s ease;
+}

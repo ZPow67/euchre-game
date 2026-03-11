@@ -56,14 +56,18 @@ function showMessage(message) {
 
 function makeHandClickable(action) {
     const cards = document.querySelectorAll("#hand-player .card")
-    cards.forEach((card, index) => {
-        card.onclick = () => window[action](index)
+    cards.forEach((cardElement, index) => {
+        cardElement.style.cursor = "pointer"
+        cardElement.style.outline = "2px solid #b8860b"
+        cardElement.onclick = () => window[action](index)
     })
 }
 
 function makeHandUnclickable() {
     const cards = document.querySelectorAll("#hand-player .card")
     cards.forEach(card => {
+        card.style.cursor = "default"
+        card.style.outline = "none"
         card.onclick = null
     })
 }
@@ -82,4 +86,58 @@ function displayTrump() {
     }
     const container = document.getElementById("trump-indicator")
     container.innerHTML = `Trump: ${suitSymbols[trumpSuit]}`
+}
+
+function displayPlayedCard(playerIndex, card) {
+    const slotMap = {
+        0: "played-player",
+        1: "played-opponent1",
+        2: "played-partner",
+        3: "played-opponent2"
+    }
+    const slot = document.getElementById(slotMap[playerIndex])
+    slot.innerHTML = createCardHTML(card)
+}
+
+function clearPlayedCards() {
+    const slots = ["played-player", "played-opponent1",
+                   "played-partner", "played-opponent2"]
+    for (let slot of slots) {
+        document.getElementById(slot).innerHTML = ""
+    }
+}
+
+function animateTrickWinner(winnerIndex) {
+    const slotMap = {
+        0: "played-player",
+        1: "played-opponent1",
+        2: "played-partner",
+        3: "played-opponent2"
+    }
+    const winnerSlot = document.getElementById(slotMap[winnerIndex])
+    winnerSlot.style.border = "2px solid #b8860b"
+    setTimeout(() => {
+        winnerSlot.style.border = ""
+        clearPlayedCards()
+    }, 1000)
+}
+
+function displaySittingOut(playerIndex) {
+    const elementMap = {
+        0: "hand-player",
+        1: "hand-opponent1",
+        2: "hand-partner",
+        3: "hand-opponent2"
+    }
+    const container = document.getElementById(elementMap[playerIndex])
+    container.innerHTML = `<p class="sitting-out">🪑 Sitting Out</p>`
+}
+
+function invalidCardFeedback(index) {
+    const cards = document.querySelectorAll("#hand-player .card")
+    const card = cards[index]
+    if (card) {
+        card.classList.add("invalid-card")
+        setTimeout(() => card.classList.remove("invalid-card"), 400)
+    }
 }
