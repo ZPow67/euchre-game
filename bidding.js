@@ -2,6 +2,12 @@
 // Responsible for: all bidding logic
 
 function runBidding() {
+
+    console.log("=== RUN BIDDING ===")
+    console.log("currentPlayerIndex:", currentPlayerIndex)
+    console.log("dealerIndex:", dealerIndex)
+    console.log("biddingRound:", biddingRound)
+    
     const player = players[currentPlayerIndex]
 
     if (currentPlayerIndex === dealerIndex &&
@@ -37,6 +43,10 @@ function runBidding() {
     
     showMessage(`${player.name} is thinking...`)
     setTimeout(() => {
+
+        // Saftety check - if it's nmow the human's turn, don't run AI logic
+        if (currentPlayerIndex === 0) return
+
         if (biddingRound === 1) {
             const decision = aiDecideRound1(player, topCard)
             if (decision === "orderUp") {
@@ -61,10 +71,24 @@ function runBidding() {
 }
 
 function nextBidder() {
+    console.log("=== NEXT BIDDER ===")
+    console.log("currentPlayerIndex before:", currentPlayerIndex)
+    console.log("dealerIndex:", dealerIndex)
+    console.log("biddingRound:", biddingRound)
+    console.log("biddingStarted:", biddingStarted)
+    
     currentPlayerIndex = (currentPlayerIndex + 1) % 4
+    console.log("currentPlayerIndex after:", currentPlayerIndex)
+    console.log("(dealerIndex + 1) % 4:", (dealerIndex + 1) % 4)
+    
+    // Mark that we've started going around
+    biddingStarted = true
 
-    if (currentPlayerIndex === (dealerIndex + 1) % 4 && biddingRound === 1) {
+    if (biddingStarted && 
+        currentPlayerIndex === (dealerIndex + 1) % 4 && 
+        biddingRound === 1) {
         biddingRound = 2
+        biddingStarted = false
         showMessage("Everyone passed! Round 2 - Name a suit!")
         setTimeout(() => runBidding(), 1500)
         return
@@ -74,10 +98,10 @@ function nextBidder() {
         showMessage("You're hung! You must name a suit!")
         setTimeout(() => {
             showButtons([
-                { label: "Hearts", action: "nameTrumpSuit('Hearts')" },
+                { label: "Hearts",   action: "nameTrumpSuit('Hearts')"   },
                 { label: "Diamonds", action: "nameTrumpSuit('Diamonds')" },
-                { label: "Spades", action: "nameTrumpSuit('Spades')" },
-                { label: "Clubs", action: "nameTrumpSuit('Clubs')" }
+                { label: "Spades",   action: "nameTrumpSuit('Spades')"   },
+                { label: "Clubs",    action: "nameTrumpSuit('Clubs')"    }
             ])
         }, 1500)
         return

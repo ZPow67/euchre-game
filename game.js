@@ -9,6 +9,7 @@ let topCard = null
 let goingAlone = false
 let deck = []
 let dealerIndex = 0
+let biddingStarted = false
 
 // Trick state
 let currentTrick = []
