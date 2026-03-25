@@ -11,6 +11,11 @@ let deck = []
 let dealerIndex = 0
 let biddingStarted = false
 let ordererIndex = null
+let myLocalSeatIndex = 0  // which seat this client controls; 0 = single-player default
+
+function isMyTurn() {
+    return currentPlayerIndex === myLocalSeatIndex
+}
 
 // Trick state
 let currentTrick = []
@@ -58,10 +63,9 @@ function startGame() {
     clearPlayedCards()
 
     // Clear hand displays before animation
-    displayHand([], "hand-player")
-    displayHand([], "hand-opponent1")
-    displayHand([], "hand-partner")
-    displayHand([], "hand-opponent2")
+    for (let i = 0; i < 4; i++) {
+        displayHand([], "hand-" + getDisplaySlot(i))
+    }
     document.getElementById('face-up-card').innerHTML = ''
 
     // Shuffle → deal (cards pile up) → fan out → start bidding

@@ -1,6 +1,13 @@
 // ---- DISPLAY.JS ----
 // Responsible for: everything that shows on screen
 
+// Maps a seat index to a visual slot name relative to the local player.
+// offset 0 = me (bottom), 1 = left, 2 = across (top), 3 = right
+function getDisplaySlot(seatIndex) {
+    const offset = (seatIndex - myLocalSeatIndex + 4) % 4
+    return ['player', 'opponent1', 'partner', 'opponent2'][offset]
+}
+
 function createCardHTML(card) {
     const suitSymbols = {
         "Hearts":   { symbol: "♥", color: "red" },
@@ -55,7 +62,7 @@ function showMessage(message) {
 }
 
 function makeHandClickable(action, validIndices = null) {
-    const cards = document.querySelectorAll("#hand-player .card")
+    const cards = document.querySelectorAll(`#hand-${getDisplaySlot(myLocalSeatIndex)} .card`)
     cards.forEach((cardElement, index) => {
         const isValid = validIndices === null || validIndices.includes(index)
         
@@ -76,7 +83,7 @@ function makeHandClickable(action, validIndices = null) {
 }
 
 function makeHandUnclickable() {
-    const cards = document.querySelectorAll("#hand-player .card")
+    const cards = document.querySelectorAll(`#hand-${getDisplaySlot(myLocalSeatIndex)} .card`)
     cards.forEach(card => {
         card.style.cursor = "default"
         card.style.outline = "none"
@@ -91,19 +98,13 @@ function displayScore() {
 }
 
 function displayDealer() {
-    const nameMap = {
-        0: { id: "name-player",    base: "You" },
-        1: { id: "name-opponent1", base: "Opponent 1" },
-        2: { id: "name-partner",   base: "Partner" },
-        3: { id: "name-opponent2", base: "Opponent 2" }
-    }
-    for (const [index, info] of Object.entries(nameMap)) {
-        const i = parseInt(index)
-        const el = document.getElementById(info.id)
+    for (let i = 0; i < 4; i++) {
+        const slot = getDisplaySlot(i)
+        const el = document.getElementById("name-" + slot)
         let badges = ""
-        if (i === dealerIndex)   badges += ` <span class="dealer-badge">D</span>`
-        if (i === ordererIndex)  badges += ` <span class="orderer-badge">O</span>`
-        el.innerHTML = info.base + badges
+        if (i === dealerIndex)  badges += ` <span class="dealer-badge">D</span>`
+        if (i === ordererIndex) badges += ` <span class="orderer-badge">O</span>`
+        el.innerHTML = players[i].name + badges
     }
 }
 
@@ -119,12 +120,12 @@ function displayTrump() {
 }
 
 function displayPlayedCard(playerIndex, card) {
-    const slotMap = { 0: "played-player", 1: "played-opponent1", 2: "played-partner", 3: "played-opponent2" }
-    const animMap = { 0: "card-slide-up", 1: "card-slide-right", 2: "card-slide-down", 3: "card-slide-left" }
-    const slot = document.getElementById(slotMap[playerIndex])
-    slot.innerHTML = createCardHTML(card)
-    const cardEl = slot.querySelector('.card')
-    if (cardEl) cardEl.classList.add(animMap[playerIndex])
+    const animMap = { player: "card-slide-up", opponent1: "card-slide-right", partner: "card-slide-down", opponent2: "card-slide-left" }
+    const slotName = getDisplaySlot(playerIndex)
+    const slotEl = document.getElementById("played-" + slotName)
+    slotEl.innerHTML = createCardHTML(card)
+    const cardEl = slotEl.querySelector('.card')
+    if (cardEl) cardEl.classList.add(animMap[slotName])
 }
 
 function clearPlayedCards() {
@@ -136,10 +137,8 @@ function clearPlayedCards() {
 }
 
 function animateTrickWinner(winnerIndex) {
-    const slotMap = { 0: "played-player", 1: "played-opponent1", 2: "played-partner", 3: "played-opponent2" }
-
     // Brief winner highlight, then fly all cards toward them
-    const winnerSlot = document.getElementById(slotMap[winnerIndex])
+    const winnerSlot = document.getElementById("played-" + getDisplaySlot(winnerIndex))
     winnerSlot.style.border = "2px solid #5b9bd5"
     setTimeout(() => {
         winnerSlot.style.border = ""
@@ -148,18 +147,12 @@ function animateTrickWinner(winnerIndex) {
 }
 
 function displaySittingOut(playerIndex) {
-    const elementMap = {
-        0: "hand-player",
-        1: "hand-opponent1",
-        2: "hand-partner",
-        3: "hand-opponent2"
-    }
-    const container = document.getElementById(elementMap[playerIndex])
+    const container = document.getElementById("hand-" + getDisplaySlot(playerIndex))
     container.innerHTML = `<p class="sitting-out">🪑 Sitting Out</p>`
 }
 
 function invalidCardFeedback(index) {
-    const cards = document.querySelectorAll("#hand-player .card")
+    const cards = document.querySelectorAll(`#hand-${getDisplaySlot(myLocalSeatIndex)} .card`)
     const card = cards[index]
     if (card) {
         card.classList.add("invalid-card")

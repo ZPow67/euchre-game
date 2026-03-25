@@ -60,14 +60,14 @@ function playTurn() {
         return
     }
 
-    if (currentPlayerIndex === 0) {
+    if (isMyTurn()) {
         showMessage("Your turn! Pick a card to play!")
-        const validIndices = getValidCardIndices(players[0])
+        const validIndices = getValidCardIndices(players[myLocalSeatIndex])
         makeHandClickable("playCard", validIndices)
     } else {
         showMessage(`${player.name} is thinking...`)
         setTimeout(() => {
-            if (currentPlayerIndex === 0) return
+            if (isMyTurn()) return
             const card = aiPlayCard(player)
             processPlayedCard(currentPlayerIndex, card)
         }, 1500)
@@ -75,7 +75,7 @@ function playTurn() {
 }
 
 function playCard(index) {
-    const player = players[0]
+    const player = players[myLocalSeatIndex]
     const card = player.hand[index]
 
     if (!card) return
@@ -84,7 +84,7 @@ function playCard(index) {
     if (leadSuit && hasLeadSuit(player.hand, leadSuit, trumpSuit)) {
         const leftBowerSuit = getLeftBowerSuit(trumpSuit)
         const isLeftBower = card.rank === "J" && card.suit === leftBowerSuit
-        const followsSuit = card.suit === leadSuit || 
+        const followsSuit = card.suit === leadSuit ||
                            (isLeftBower && leadSuit === trumpSuit)
         const power = getCardPower(card, trumpSuit, leadSuit)
 
@@ -96,7 +96,7 @@ function playCard(index) {
     }
 
     makeHandUnclickable()
-    processPlayedCard(0, card)
+    processPlayedCard(myLocalSeatIndex, card)
 }
 
 function processPlayedCard(playerIndex, card) {
@@ -131,13 +131,12 @@ function processPlayedCard(playerIndex, card) {
     displayPlayedCard(playerIndex, card)
 
     // Refresh displayed hands
-    if (playerIndex === 0) {
+    if (playerIndex === myLocalSeatIndex) {
         const validIndices = getValidCardIndices(player)
         makeHandClickable("playCard", validIndices)
-        displayHand(player.hand, "hand-player")
+        displayHand(player.hand, "hand-" + getDisplaySlot(playerIndex))
     } else if (!player.isSittingOut) {
-        const handMap = { 1: "hand-opponent1", 2: "hand-partner", 3: "hand-opponent2" }
-        displayHand(player.hand, handMap[playerIndex], true)
+        displayHand(player.hand, "hand-" + getDisplaySlot(playerIndex), true)
     }
 
     // All active players played?

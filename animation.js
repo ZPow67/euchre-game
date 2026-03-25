@@ -46,7 +46,6 @@ function animateDealCards(callback) {
     const deckX = tableRect.left + tableRect.width / 2 - 22
     const deckY = tableRect.top + tableRect.height / 2 - 32
 
-    const handIds = { 0: 'hand-player', 1: 'hand-opponent1', 2: 'hand-partner', 3: 'hand-opponent2' }
     const dealOrder = [1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0]
     const cardGap = 80
 
@@ -54,7 +53,8 @@ function animateDealCards(callback) {
 
     // Precompute target centres before any cards move
     const targets = {}
-    for (const [idx, id] of Object.entries(handIds)) {
+    for (let idx = 0; idx < 4; idx++) {
+        const id = 'hand-' + getDisplaySlot(idx)
         const rect = document.getElementById(id).getBoundingClientRect()
         targets[idx] = { x: rect.left + rect.width / 2 - 22, y: rect.top }
     }
@@ -99,18 +99,18 @@ function flyCardToPile(fromX, fromY, toX, toY, playerIndex) {
 
 // Clone all played cards, clear the slots, then fly the clones toward the winner
 function animateTrickWin(winnerIndex) {
-    const slotIds = { 0: "played-player", 1: "played-opponent1", 2: "played-partner", 3: "played-opponent2" }
     const flyDuration = 380
 
     // Capture winner target position before clearing anything
-    const winnerRect = document.getElementById(slotIds[winnerIndex]).getBoundingClientRect()
+    const winnerRect = document.getElementById("played-" + getDisplaySlot(winnerIndex)).getBoundingClientRect()
     const toX = winnerRect.left + winnerRect.width  / 2 - 22
     const toY = winnerRect.top  + winnerRect.height / 2 - 32
 
     const clones = []
 
     // Clone every visible played card
-    for (const id of Object.values(slotIds)) {
+    for (const slot of ['player', 'opponent1', 'partner', 'opponent2']) {
+        const id = "played-" + slot
         const cardEl = document.getElementById(id).firstElementChild
         if (!cardEl) continue
 
@@ -150,8 +150,7 @@ function animateTrickWin(winnerIndex) {
 // Clear the pile for one player, render their actual hand, then spring-animate
 // each card from a centre-stacked position out to its final flex position
 function fanOutHand(playerIndex, faceDown) {
-    const handIds = { 0: 'hand-player', 1: 'hand-opponent1', 2: 'hand-partner', 3: 'hand-opponent2' }
-    const handId  = handIds[playerIndex]
+    const handId = 'hand-' + getDisplaySlot(playerIndex)
     const container = document.getElementById(handId)
 
     // Remove pile elements

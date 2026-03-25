@@ -15,7 +15,7 @@ function runBidding() {
         // This is the dealer's turn in round 1
     }
 
-    if (currentPlayerIndex === 0) {
+    if (isMyTurn()) {
         if (biddingRound === 1) {
             const isDealer = currentPlayerIndex === dealerIndex
             showMessage(isDealer ? "Your turn! Pick up or pass?" : "Your turn! Order up or pass?")
@@ -46,8 +46,8 @@ function runBidding() {
     showMessage(`${player.name} is thinking...`)
     setTimeout(() => {
 
-        // Saftety check - if it's nmow the human's turn, don't run AI logic
-        if (currentPlayerIndex === 0) return
+        // Safety check - if it's now the human's turn, don't run AI logic
+        if (isMyTurn()) return
 
         if (biddingRound === 1) {
             const decision = aiDecideRound1(player, topCard)

@@ -19,15 +19,15 @@ function startSetup(playerIndex) {
         // Add top card to dealer's hand silently
         players[dealerIndex].hand.push(topCard)
 
-        if (dealerIndex === 0 && players[0].isSittingOut) {
+        if (dealerIndex === myLocalSeatIndex && players[myLocalSeatIndex].isSittingOut) {
             // Human is dealer but sitting out — auto-discard silently
-            aiDiscard(players[0])
+            aiDiscard(players[myLocalSeatIndex])
             document.getElementById("face-up-card").innerHTML = `<div class="card-back"></div>`
-            displaySittingOut(0)
+            displaySittingOut(myLocalSeatIndex)
             setTimeout(() => beginTricks(), 1500)
-        } else if (dealerIndex === 0) {
+        } else if (dealerIndex === myLocalSeatIndex) {
             // Append top card to the already-displayed fanned hand, no rebuild
-            document.getElementById("hand-player").insertAdjacentHTML("beforeend", createCardHTML(topCard))
+            document.getElementById("hand-" + getDisplaySlot(myLocalSeatIndex)).insertAdjacentHTML("beforeend", createCardHTML(topCard))
             showMessage("Pick a card to discard!")
             // Only allow discarding the original 5 cards — not the picked-up top card
             makeHandClickable("discardCard", [0, 1, 2, 3, 4])
@@ -37,8 +37,8 @@ function startSetup(playerIndex) {
             // Flip face up card face down
             document.getElementById("face-up-card").innerHTML =
                 `<div class="card-back"></div>`
-            sortHand(players[0].hand, trumpSuit)
-            displayHand(players[0].hand, "hand-player")
+            sortHand(players[myLocalSeatIndex].hand, trumpSuit)
+            displayHand(players[myLocalSeatIndex].hand, "hand-" + getDisplaySlot(myLocalSeatIndex))
             setTimeout(() => beginTricks(), 1500)
         }
 
@@ -47,8 +47,8 @@ function startSetup(playerIndex) {
         document.getElementById("face-up-card").innerHTML =
             `<div class="card-back"></div>`
         showMessage(`${trumpSuit} is trump! Let's play!`)
-        sortHand(players[0].hand, trumpSuit)
-        displayHand(players[0].hand, "hand-player")
+        sortHand(players[myLocalSeatIndex].hand, trumpSuit)
+        displayHand(players[myLocalSeatIndex].hand, "hand-" + getDisplaySlot(myLocalSeatIndex))
         setTimeout(() => beginTricks(), 1500)
     }
 }
@@ -57,15 +57,15 @@ function discardCard(index) {
     makeHandUnclickable()
 
     // Remove selected card from hand
-    players[0].hand.splice(index, 1)
+    players[myLocalSeatIndex].hand.splice(index, 1)
 
     // Flip face up card face down after discard
     document.getElementById("face-up-card").innerHTML =
         `<div class="card-back"></div>`
 
     // Sort and show full hand including top card
-    sortHand(players[0].hand, trumpSuit)
-    displayHand(players[0].hand, "hand-player")
+    sortHand(players[myLocalSeatIndex].hand, trumpSuit)
+    displayHand(players[myLocalSeatIndex].hand, "hand-" + getDisplaySlot(myLocalSeatIndex))
 
     showMessage(`Card discarded! ${trumpSuit} is trump! Let's play!`)
     setTimeout(() => beginTricks(), 1500)
