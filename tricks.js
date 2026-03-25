@@ -11,6 +11,46 @@ function startTricks() {
     setTimeout(() => playTurn(), 1000)
 }
 
+function getValidCardIndices(player) {
+    if (!leadSuit) return null // all cards valid
+
+    // Special check when trump is led
+    // Must include Left Bower as a valid trump card
+    const leftBowerSuit = getLeftBowerSuit(trumpSuit)
+    
+    const hasTrumpCards = player.hand.some(card => {
+        if (card.rank === "J" && card.suit === leftBowerSuit) return true
+        return card.suit === trumpSuit
+    })
+
+    // If trump is led and player has trump cards — force trump
+    if (leadSuit === trumpSuit && hasTrumpCards) {
+        const validIndices = []
+        player.hand.forEach((card, index) => {
+            // Left bower counts as trump!
+            if (card.rank === "J" && card.suit === leftBowerSuit) {
+                validIndices.push(index)
+            } else if (card.suit === trumpSuit) {
+                validIndices.push(index)
+            }
+        })
+        return validIndices
+    }
+
+    // Normal follow suit check
+    if (!hasLeadSuit(player.hand, leadSuit, trumpSuit)) {
+        return null // no lead suit cards — all cards valid
+    }
+
+    const validIndices = []
+    player.hand.forEach((card, index) => {
+        if (card.rank === "J" && card.suit === leftBowerSuit) return
+        if (card.suit === leadSuit) validIndices.push(index)
+    })
+
+    return validIndices
+}
+
 function playTurn() {
     const player = players[currentPlayerIndex]
 
@@ -22,10 +62,12 @@ function playTurn() {
 
     if (currentPlayerIndex === 0) {
         showMessage("Your turn! Pick a card to play!")
-        makeHandClickable("playCard")
+        const validIndices = getValidCardIndices(players[0])
+        makeHandClickable("playCard", validIndices)
     } else {
         showMessage(`${player.name} is thinking...`)
         setTimeout(() => {
+            if (currentPlayerIndex === 0) return
             const card = aiPlayCard(player)
             processPlayedCard(currentPlayerIndex, card)
         }, 1500)
@@ -40,10 +82,11 @@ function playCard(index) {
 
     // Validate follow suit
     if (leadSuit && hasLeadSuit(player.hand, leadSuit, trumpSuit)) {
-        const power = getCardPower(card, trumpSuit, leadSuit)
         const leftBowerSuit = getLeftBowerSuit(trumpSuit)
         const isLeftBower = card.rank === "J" && card.suit === leftBowerSuit
-        const followsSuit = card.suit === leadSuit || isLeftBower && leadSuit === trumpSuit
+        const followsSuit = card.suit === leadSuit || 
+                           (isLeftBower && leadSuit === trumpSuit)
+        const power = getCardPower(card, trumpSuit, leadSuit)
 
         if (!followsSuit && power < 8) {
             invalidCardFeedback(index)
@@ -57,16 +100,10 @@ function playCard(index) {
 }
 
 function processPlayedCard(playerIndex, card) {
-
-    console.log("currentTrick.length:", currentTrick.length)
-    console.log("card being played:", card)
-
-    // Safety check!
+    // Safety check
     if (!card) {
         console.log("Null card for player:", playerIndex)
         console.log("Hand:", players[playerIndex].hand)
-        console.log("leadSuit:", leadSuit)
-        console.log("trumpSuit:", trumpSuit)
         return
     }
 
@@ -81,10 +118,8 @@ function processPlayedCard(playerIndex, card) {
         } else {
             leadSuit = card.suit
         }
-        updateDebug()  // ADD THIS
-        console.log("leadSuit set to:", leadSuit)
+        updateDebug()
     }
-
 
     // Remove card from hand
     player.hand.splice(handIndex, 1)
@@ -95,13 +130,19 @@ function processPlayedCard(playerIndex, card) {
     // Display on table
     displayPlayedCard(playerIndex, card)
 
-    // Refresh human hand
+    // Refresh displayed hands
     if (playerIndex === 0) {
+        const validIndices = getValidCardIndices(player)
+        makeHandClickable("playCard", validIndices)
         displayHand(player.hand, "hand-player")
+    } else if (!player.isSittingOut) {
+        const handMap = { 1: "hand-opponent1", 2: "hand-partner", 3: "hand-opponent2" }
+        displayHand(player.hand, handMap[playerIndex], true)
     }
 
-    // All players played?
-    if (currentTrick.length === 4) {
+    // All active players played?
+    const activePlayers = players.filter(p => !p.isSittingOut).length
+    if (currentTrick.length === activePlayers) {
         setTimeout(() => evaluateTrick(), 1500)
     } else {
         currentPlayerIndex = (currentPlayerIndex + 1) % 4

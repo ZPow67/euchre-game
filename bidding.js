@@ -17,9 +17,10 @@ function runBidding() {
 
     if (currentPlayerIndex === 0) {
         if (biddingRound === 1) {
-            showMessage("Your turn! Order up or pass?")
+            const isDealer = currentPlayerIndex === dealerIndex
+            showMessage(isDealer ? "Your turn! Pick up or pass?" : "Your turn! Order up or pass?")
             showButtons([
-                { label: "Order Up", action: "orderUp()" },
+                { label: isDealer ? "Pick Up" : "Order Up", action: "orderUp()" },
                 { label: "Pass", action: "passBid()" }
             ])
         } else {
@@ -39,8 +40,9 @@ function runBidding() {
 
             showButtons(buttons)
         }
+        return
     }
-    
+
     showMessage(`${player.name} is thinking...`)
     setTimeout(() => {
 
@@ -112,18 +114,22 @@ function nextBidder() {
 
 function setTrump(suit, playerIndex) {
     trumpSuit = suit
+    ordererIndex = playerIndex
     const player = players[playerIndex]
     showMessage(`${player.name} set trump to ${suit}! 🎉`)
     hideButtons()
     setOffence(playerIndex)
     displayTrump()
     displayScore()
+    displayDealer()
     updateDebug()
 
-    // Forced alone — only when Partner orders up the human dealer
-    if (playerIndex === 2 && biddingRound === 1 && dealerIndex === 0) {
-        players[2].isGoingAlone = true
-        showMessage("Partner ordered you up - they must go alone!")
+    // Forced alone — if you ordered up your partner as dealer, you go alone
+    if (biddingRound === 1 && dealerIndex === (playerIndex + 2) % 4) {
+        players[playerIndex].isGoingAlone = true
+        const orderer = players[playerIndex]
+        const dealer = players[dealerIndex]
+        showMessage(`${orderer.name} ordered up ${dealer.name} — going alone!`)
     }
 
     setTimeout(() => startSetup(playerIndex), 1500)

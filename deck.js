@@ -74,9 +74,14 @@ function hasLeadSuit(hand, leadSuit, trumpSuit) {
 }
 
 function sortHand(hand, trumpSuit) {
+    const suitOrder = { "Clubs": 0, "Diamonds": 1, "Hearts": 2, "Spades": 3 }
+    const rankOrder = { "9": 0, "10": 1, "J": 2, "Q": 3, "K": 4, "A": 5 }
     hand.sort((a, b) => {
         const powerA = getCardPower(a, trumpSuit, null)
         const powerB = getCardPower(b, trumpSuit, null)
-        return powerB - powerA
+        if (powerA !== powerB) return powerB - powerA
+        // Both non-trump: sort by suit alphabetically, then rank high to low
+        if (a.suit !== b.suit) return suitOrder[a.suit] - suitOrder[b.suit]
+        return rankOrder[b.rank] - rankOrder[a.rank]
     })
 }

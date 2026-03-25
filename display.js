@@ -54,11 +54,23 @@ function showMessage(message) {
     container.innerHTML = message
 }
 
-function makeHandClickable(action) {
+function makeHandClickable(action, validIndices = null) {
     const cards = document.querySelectorAll("#hand-player .card")
     cards.forEach((cardElement, index) => {
-        cardElement.style.cursor = "pointer"
-        cardElement.style.outline = "2px solid #b8860b"
+        const isValid = validIndices === null || validIndices.includes(index)
+        
+        if (isValid) {
+            // Valid card — blue outline, pointer cursor
+            cardElement.style.cursor = "pointer"
+            cardElement.style.opacity = "1"
+            cardElement.style.outline = "2px solid #5b9bd5"
+        } else {
+            // Invalid card — greyed out, not allowed
+            cardElement.style.cursor = "not-allowed"
+            cardElement.style.opacity = "0.4"
+            cardElement.style.outline = "none"
+        }
+        
         cardElement.onclick = () => window[action](index)
     })
 }
@@ -68,6 +80,7 @@ function makeHandUnclickable() {
     cards.forEach(card => {
         card.style.cursor = "default"
         card.style.outline = "none"
+        card.style.opacity = "1"
         card.onclick = null
     })
 }
@@ -75,6 +88,23 @@ function makeHandUnclickable() {
 function displayScore() {
     document.getElementById("score-team1").innerHTML = scoreTeam1
     document.getElementById("score-team2").innerHTML = scoreTeam2
+}
+
+function displayDealer() {
+    const nameMap = {
+        0: { id: "name-player",    base: "You" },
+        1: { id: "name-opponent1", base: "Opponent 1" },
+        2: { id: "name-partner",   base: "Partner" },
+        3: { id: "name-opponent2", base: "Opponent 2" }
+    }
+    for (const [index, info] of Object.entries(nameMap)) {
+        const i = parseInt(index)
+        const el = document.getElementById(info.id)
+        let badges = ""
+        if (i === dealerIndex)   badges += ` <span class="dealer-badge">D</span>`
+        if (i === ordererIndex)  badges += ` <span class="orderer-badge">O</span>`
+        el.innerHTML = info.base + badges
+    }
 }
 
 function displayTrump() {
@@ -89,14 +119,12 @@ function displayTrump() {
 }
 
 function displayPlayedCard(playerIndex, card) {
-    const slotMap = {
-        0: "played-player",
-        1: "played-opponent1",
-        2: "played-partner",
-        3: "played-opponent2"
-    }
+    const slotMap = { 0: "played-player", 1: "played-opponent1", 2: "played-partner", 3: "played-opponent2" }
+    const animMap = { 0: "card-slide-up", 1: "card-slide-right", 2: "card-slide-down", 3: "card-slide-left" }
     const slot = document.getElementById(slotMap[playerIndex])
     slot.innerHTML = createCardHTML(card)
+    const cardEl = slot.querySelector('.card')
+    if (cardEl) cardEl.classList.add(animMap[playerIndex])
 }
 
 function clearPlayedCards() {
@@ -108,18 +136,15 @@ function clearPlayedCards() {
 }
 
 function animateTrickWinner(winnerIndex) {
-    const slotMap = {
-        0: "played-player",
-        1: "played-opponent1",
-        2: "played-partner",
-        3: "played-opponent2"
-    }
+    const slotMap = { 0: "played-player", 1: "played-opponent1", 2: "played-partner", 3: "played-opponent2" }
+
+    // Brief winner highlight, then fly all cards toward them
     const winnerSlot = document.getElementById(slotMap[winnerIndex])
-    winnerSlot.style.border = "2px solid #b8860b"
+    winnerSlot.style.border = "2px solid #5b9bd5"
     setTimeout(() => {
         winnerSlot.style.border = ""
-        clearPlayedCards()
-    }, 1000)
+        animateTrickWin(winnerIndex)
+    }, 500)
 }
 
 function displaySittingOut(playerIndex) {

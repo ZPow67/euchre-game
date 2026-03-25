@@ -1,38 +1,43 @@
 // ---- AI.JS ----
 // Responsible for: all AI decision making
 
-function countTrumpCards(hand, potentialTrump) {
-    const leftBowerSuit = getLeftBowerSuit(potentialTrump)
-    let count = 0
+function scoreTrumpHand(hand, potentialTrump) {
+    let score = 0
     for (let card of hand) {
-        if (card.suit === potentialTrump) count++
-        else if (card.rank === "J" && card.suit === leftBowerSuit) count++
+        const power = getCardPower(card, potentialTrump, null)
+        if (power === 14) score += 4      // right bower
+        else if (power === 13) score += 3  // left bower
+        else if (power === 12) score += 2  // ace of trump
+        else if (power === 11) score += 1.5 // king of trump
+        else if (power >= 8) score += 1    // Q, 10, 9 of trump
     }
-    return count
+    return score
 }
 
 function aiDecideRound1(player, topCard) {
-    const trumpCount = countTrumpCards(player.hand, topCard.suit)
-    if (trumpCount >= 3) return "orderUp"
+    const score = scoreTrumpHand(player.hand, topCard.suit)
+    // Threshold varies slightly so identical hands don't always behave the same
+    const threshold = 3 + Math.random() * 1.5  // range: 3.0 – 4.5
+    if (score >= threshold) return "orderUp"
     return "pass"
 }
 
 function aiDecideRound2(player, topCardSuit) {
-    let suitCounts = { "Hearts": 0, "Diamonds": 0, "Spades": 0, "Clubs": 0 }
-    for (let card of player.hand) {
-        suitCounts[card.suit]++
-    }
+    const allSuits = ["Hearts", "Diamonds", "Spades", "Clubs"]
     let bestSuit = null
-    let bestCount = 0
-    for (let suit in suitCounts) {
-        // Can't name the turned down suit!
+    let bestScore = 0
+    for (let suit of allSuits) {
         if (suit === topCardSuit) continue
-        if (suitCounts[suit] > bestCount) {
-            bestCount = suitCounts[suit]
+        const score = scoreTrumpHand(player.hand, suit)
+        if (score > bestScore) {
+            bestScore = score
             bestSuit = suit
         }
     }
-    return bestSuit
+    // Higher threshold in round 2 — no card pickup, so need a stronger hand
+    const threshold = 4 + Math.random() * 2  // range: 4.0 – 6.0
+    if (bestScore >= threshold) return bestSuit
+    return null  // pass
 }
 
 function aiDiscard(player) {
@@ -57,7 +62,7 @@ function aiDiscard(player) {
 
     if (voidCandidate) {
         const index = hand.indexOf(voidCandidate)
-        hand[index] = topCard
+        hand.splice(index, 1)
         return
     }
 
@@ -85,7 +90,7 @@ function aiDiscard(player) {
         }
     }
 
-    hand[lowestIndex] = topCard
+    hand.splice(lowestIndex, 1)
 }
 
 function isTeammateWinning(currentPlayerIndex) {
@@ -194,6 +199,14 @@ function getBestGarbageCard(hand) {
 function aiPlayCard(player) {
     const hand = player.hand
     const position = currentTrick.length
+
+    console.log("=== AI PLAYING ===")
+    console.log("Player:", player.name)
+    console.log("Hand:", hand.map(c => c.rank + " of " + c.suit))
+    console.log("Lead suit:", leadSuit)
+    console.log("Trump suit:", trumpSuit)
+    console.log("Position:", position)
+
     const onOffence = (player.team === 1 && team1IsOffence) ||
         (player.team === 2 && team2IsOffence)
 

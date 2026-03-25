@@ -28,7 +28,7 @@
 
         <!-- Partner at the top -->
         <div class="opponent-top">
-            <p>Partner</p>
+            <p id="name-partner">Partner</p>
             <div class="card-row" id="hand-partner"></div>
         </div>
 
@@ -37,37 +37,36 @@
 
             <!-- Left opponent -->
             <div class="opponent-side">
-                <p>Opponent 1</p>
+                <p id="name-opponent1">Opponent 1</p>
                 <div class="card-row" id="hand-opponent1"></div>
             </div>
 
             <!-- The table -->
-            <div class="table">
-                <div class="table-info">
-                    <div id="trump-indicator" class="trump-indicator"></div>
-                </div>
-
-                <!-- Cards played on table -->
-                <div class="played-cards">
-                    <div class="played-top">
-                        <div id="played-partner" class="played-card-slot"></div>
-                    </div>
-                    <div class="played-middle">
-                        <div id="played-opponent1" class="played-card-slot"></div>
-                        <div class="table-center">
-                            <div id="face-up-card"></div>
+            <div class="table-wrapper">
+                <div id="trump-indicator" class="trump-indicator"></div>
+                <div class="table">
+                    <!-- Cards played on table -->
+                    <div class="played-cards">
+                        <div class="played-top">
+                            <div id="played-partner" class="played-card-slot"></div>
                         </div>
-                        <div id="played-opponent2" class="played-card-slot"></div>
-                    </div>
-                    <div class="played-bottom">
-                        <div id="played-player" class="played-card-slot"></div>
+                        <div class="played-middle">
+                            <div id="played-opponent1" class="played-card-slot"></div>
+                            <div class="table-center">
+                                <div id="face-up-card"></div>
+                            </div>
+                            <div id="played-opponent2" class="played-card-slot"></div>
+                        </div>
+                        <div class="played-bottom">
+                            <div id="played-player" class="played-card-slot"></div>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Right opponent -->
             <div class="opponent-side">
-                <p>Opponent 2</p>
+                <p id="name-opponent2">Opponent 2</p>
                 <div class="card-row" id="hand-opponent2"></div>
             </div>
 
@@ -75,6 +74,7 @@
 
         <!-- Your hand at the bottom -->
         <div class="your-hand">
+            <p id="name-player">You</p>
             <div class="card-row" id="hand-player"></div>
         </div>
 
@@ -99,6 +99,7 @@
 
     </div>
 
+    <script src="animation.js"></script>
     <script src="deck.js"></script>
     <script src="players.js"></script>
     <script src="display.js"></script>

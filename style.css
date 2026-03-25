@@ -1,3 +1,27 @@
+/* Dealer badge */
+.dealer-badge {
+    display: inline-block;
+    background: #5b9bd5;
+    color: white;
+    font-size: 0.7em;
+    font-weight: bold;
+    padding: 1px 5px;
+    border-radius: 4px;
+    vertical-align: middle;
+}
+
+/* Orderer badge */
+.orderer-badge {
+    display: inline-block;
+    background: #e8a838;
+    color: white;
+    font-size: 0.7em;
+    font-weight: bold;
+    padding: 1px 5px;
+    border-radius: 4px;
+    vertical-align: middle;
+}
+
 /* Import old-timey font */
 * {
     font-family: 'Playfair Display', serif;
@@ -28,14 +52,25 @@ body {
 /* The felt table */
 .table {
     background-color: #2d6a4f;
-    border: 6px solid #b8860b;
+    border: 6px solid #5b9bd5;
     border-radius: 20px;
-    width: 200px;
-    height: 200px;
+    width: 220px;
+    height: 220px;
     display: flex;
     justify-content: center;
     align-items: center;
     box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Table wrapper — holds trump indicator above the table */
+.table-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
 }
 
 /* Middle row layout */
@@ -48,7 +83,7 @@ body {
 }
 
 /* Opponent areas */
-.opponent-top, .opponent-side {
+.opponent-top {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -57,12 +92,24 @@ body {
     font-size: 14px;
 }
 
+.opponent-side {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    color: #f5f0e8;
+    font-size: 14px;
+    width: 155px;
+    flex-shrink: 0;
+}
+
 /* Card rows */
 .card-row {
     display: flex;
     gap: 5px;
     flex-wrap: wrap;
     justify-content: center;
+    min-height: 65px;
 }
 
 /* Individual cards */
@@ -80,6 +127,7 @@ body {
     font-weight: bold;
     box-shadow: 2px 2px 4px rgba(0,0,0,0.3);
     cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 /* Card back (opponents) */
@@ -104,10 +152,29 @@ body {
 /* Black suits */
 .black { color: #111111; }
 
+/* Card hover sway — only player's hand */
+@keyframes card-sway {
+    0%   { transform: translateY(-10px) rotate(-2deg); }
+    33%  { transform: translateY(-13px) rotate(0deg); }
+    66%  { transform: translateY(-10px) rotate(2deg); }
+    100% { transform: translateY(-10px) rotate(-2deg); }
+}
+
+#hand-player .card:hover {
+    animation: card-sway 2s ease-in-out infinite;
+    box-shadow: 4px 12px 18px rgba(0,0,0,0.5);
+    position: relative;
+    z-index: 10;
+}
+
 /* Your hand */
 .your-hand {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    color: #f5f0e8;
+    font-size: 14px;
     padding: 10px;
 }
 
@@ -129,7 +196,7 @@ body {
 }
 
 .buttons button {
-    background-color: #b8860b;
+    background-color: #5b9bd5;
     color: white;
     border: none;
     padding: 10px 25px;
@@ -141,7 +208,7 @@ body {
 }
 
 .buttons button:hover {
-    background-color: #d4a017;
+    background-color: #7ab8f5;
 }
 
 .game-message {
@@ -165,7 +232,7 @@ body {
     background-color: rgba(0,0,0,0.4);
     padding: 8px 20px;
     border-radius: 10px;
-    border: 2px solid #b8860b;
+    border: 2px solid #5b9bd5;
     color: #f5f0e8;
 }
 
@@ -184,7 +251,7 @@ body {
 .score-value {
     font-size: 24px;
     font-weight: bold;
-    color: #b8860b;
+    color: #5b9bd5;
 }
 
 .score-divider {
@@ -194,21 +261,15 @@ body {
 }
 
 /* Trump indicator */
-.table-info {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-}
-
 .trump-indicator {
     color: #f5f0e8;
     font-size: 14px;
     background-color: rgba(0,0,0,0.3);
     padding: 4px 10px;
     border-radius: 6px;
-    border: 1px solid #b8860b;
+    border: 1px solid #5b9bd5;
     min-height: 24px;
+    text-align: center;
 }
 
 .sitting-out {
@@ -223,8 +284,10 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
+    justify-content: space-between;
     width: 100%;
+    height: 100%;
+    padding: 8px 6px;
 }
 
 .played-top, .played-bottom {
@@ -237,10 +300,11 @@ body {
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    gap: 4px;
 }
 
 .table-center {
+    width: 45px;
+    height: 65px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -251,6 +315,7 @@ body {
     height: 65px;
     border-radius: 6px;
     border: 1px dashed rgba(255,255,255,0.2);
+    flex-shrink: 0;
 }
 
 /* Invalid card animation */
@@ -272,6 +337,59 @@ body {
 .invalid-card {
     animation: shake 0.4s ease, redflash 0.4s ease;
 }
+
+/* ---- Shuffle animation ---- */
+.shuffle-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 50;
+    pointer-events: none;
+}
+
+.shuffle-card {
+    position: absolute;
+    width: 45px;
+    height: 65px;
+    border-radius: 6px;
+}
+
+.shuffle-left {
+    animation: shuffle-fan-left 1s ease-in-out forwards;
+}
+
+.shuffle-right {
+    animation: shuffle-fan-right 1s ease-in-out forwards;
+}
+
+@keyframes shuffle-fan-left {
+    0%   { transform: translate(0, 0) rotate(0deg); }
+    22%  { transform: translate(-40px, -8px) rotate(-22deg); }
+    50%  { transform: translate(0, 0) rotate(0deg); }
+    72%  { transform: translate(-28px, -5px) rotate(-14deg); }
+    100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+@keyframes shuffle-fan-right {
+    0%   { transform: translate(0, 0) rotate(0deg); }
+    22%  { transform: translate(40px, -8px) rotate(22deg); }
+    50%  { transform: translate(0, 0) rotate(0deg); }
+    72%  { transform: translate(28px, -5px) rotate(14deg); }
+    100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+/* ---- Card play slide-in animations ---- */
+@keyframes card-slide-up    { from { transform: translateY(40px);  opacity: 0; } to { transform: translateY(0);  opacity: 1; } }
+@keyframes card-slide-down  { from { transform: translateY(-40px); opacity: 0; } to { transform: translateY(0);  opacity: 1; } }
+@keyframes card-slide-left  { from { transform: translateX(40px);  opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes card-slide-right { from { transform: translateX(-40px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+.card-slide-up    { animation: card-slide-up    0.28s ease-out; }
+.card-slide-down  { animation: card-slide-down  0.28s ease-out; }
+.card-slide-left  { animation: card-slide-left  0.28s ease-out; }
+.card-slide-right { animation: card-slide-right 0.28s ease-out; }
 
 /* Debug Panel */
 .debug-panel {
